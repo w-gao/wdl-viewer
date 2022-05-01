@@ -1,9 +1,9 @@
-import logging
+import os
 
 from flask import Flask, Blueprint, request, redirect
 from werkzeug.exceptions import HTTPException
-
 from wdl_viewer.wdl.utils import get_graph
+
 
 bp = Blueprint('core', __name__)
 
@@ -53,4 +53,16 @@ def handle_error(err: HTTPException):
     return {"message": str(err), "code": err.code}, err.code
 
 
-app.run(host='0.0.0.0', port=5000)
+def main():
+    port = os.environ.get("WDL_VIEWER_PORT", 5000)
+
+    # Flask app
+    app.run(host='0.0.0.0', port=port)
+
+    # WebSocket app
+    # server = WdlViewerServer()
+    # server.start("0.0.0.0", port)
+
+
+if __name__ == "__main__":
+    main()

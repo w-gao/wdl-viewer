@@ -1,3 +1,5 @@
+import logging
+
 from antlr4 import InputStream, CommonTokenStream
 from wdl_parsers.v1_0.WdlV1Lexer import WdlV1Lexer
 from wdl_parsers.v1_0.WdlV1Parser import WdlV1Parser
@@ -11,6 +13,9 @@ class WdlV1Graph(AbstractWdlGraph):
     """
     def __init__(self, wdl_stream: str):
         super().__init__(wdl_stream)
+
+        # a list of dependency WDL workflows used by this WDL workflow.
+        self.wdl_dependencies = []
 
     @property
     def version(self) -> str:
@@ -35,3 +40,6 @@ class WdlV1Graph(AbstractWdlGraph):
 
         # for element in ctx.document_element():
         #     self.visit_document_element(element)
+
+        logging.warning(len(ctx.document_element()))
+        logging.warning(wf)

@@ -11,6 +11,9 @@ class AbstractWdlGraph:
         """
         self.wdl_stream = wdl_stream
 
+        # a list of dependency WDL workflows used by this WDL workflow.
+        self.wdl_dependencies = []
+
     @property
     def version(self) -> str:
         """
