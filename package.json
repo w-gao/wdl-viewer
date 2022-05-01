@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "dev:server": "FLASK_APP=server/src/wdl_viewer/app.py FLASK_ENV=development flask run",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

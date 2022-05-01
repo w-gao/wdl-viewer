@@ -11,6 +11,11 @@ Run the dev server on http://localhost:3000. Changes to the source code will
 automatically be reloaded in the browser.
 
 
+#### `yarn dev:server`
+
+Run the dev REST API server on http://localhost:5000.
+
+
 ## License
 
 Copyright (C) 2022 William Gao, under the MIT license.
