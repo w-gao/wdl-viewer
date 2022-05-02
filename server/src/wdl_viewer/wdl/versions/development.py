@@ -1,3 +1,5 @@
+from typing import Union, Optional, List
+
 from wdl_viewer.wdl.wdl_graph import AbstractWdlGraph
 
 
@@ -7,8 +9,13 @@ class WdlGraph(AbstractWdlGraph):
 
     NOTE: the development version is constantly changing.
     """
-    def __init__(self, wdl_stream: str):
-        super().__init__(wdl_stream)
+    def __init__(
+            self,
+            wdl_url: str,
+            wdl_stream: Union[str, bytes],
+            as_: Optional[str] = None,
+            aliases: Optional[List[str]] = None):
+        super().__init__(wdl_url, wdl_stream, as_, aliases)
 
     @property
     def version(self) -> str:

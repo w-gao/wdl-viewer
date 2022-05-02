@@ -2,6 +2,7 @@
 # See: https://github.com/DataBiosphere/toil/blob/master/LICENSE
 import requests
 
+from typing import Optional, List
 from wdl_viewer.wdl.wdl_graph import AbstractWdlGraph
 
 
@@ -29,11 +30,13 @@ def get_version(iterable) -> str:
     return 'draft-2'
 
 
-def get_graph(wdl_url: str) -> AbstractWdlGraph:
+def get_graph(wdl_url: str, as_: Optional[str] = None, aliases: Optional[List[str]] = None) -> AbstractWdlGraph:
     """
     Creates an instance of a WDLGraph based on the version.
 
     :param wdl_url: The URL to the WDL file.
+    :param as_:
+    :param aliases:
     """
 
     if wdl_url.startswith(("http://", "https://")):
@@ -52,13 +55,13 @@ def get_graph(wdl_url: str) -> AbstractWdlGraph:
         raise NotImplementedError("draft-2 version is no longer supported.")
     elif version == '1.0':
         from wdl_viewer.wdl.versions.v1_0 import WdlV1Graph
-        return WdlV1Graph(stream)
+        return WdlV1Graph(wdl_url, stream, as_, aliases)
     elif version == '1.0':
         from wdl_viewer.wdl.versions.v1_1 import WdlV1Graph
-        return WdlV1Graph(stream)
+        return WdlV1Graph(wdl_url, stream, as_, aliases)
     elif version == 'development':
         from wdl_viewer.wdl.versions.development import WdlGraph
-        return WdlGraph(stream)
+        return WdlGraph(wdl_url, stream, as_, aliases)
     else:
         raise RuntimeError(f"Unsupported WDL version: '{version}'.")
 

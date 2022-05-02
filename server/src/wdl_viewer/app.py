@@ -1,8 +1,9 @@
 import os
 
 from flask import Flask, Blueprint, request, redirect
-from werkzeug.exceptions import HTTPException
-from wdl_viewer.wdl.utils import get_graph
+from werkzeug.exceptions import HTTPException, abort
+
+from wdl_viewer.core import Session
 
 
 bp = Blueprint('core', __name__)
@@ -26,12 +27,18 @@ def workflow_graph():
     if not workflow_url:
         raise ValueError("You must set a workflow_url in the request body.")
 
-    graph = get_graph(workflow_url)
-    graph.parse_tree()
+    try:
+        session = Session()
+        graph = session.get_graph_with_cache(workflow_url)
+        graph.parse_tree()
+    except Exception as e:
+        abort(500, "Something went wrong: " + str(e))
+        return
 
     return {
         "message": request.form,
         "version": graph.version,
+        "wf_dependencies_graph": graph.serialize_wdl_dependencies(),
         "files": [
             f.filename for f in request.files.getlist("workflow_attachments")
         ]
@@ -49,6 +56,7 @@ def index():
 
 @app.errorhandler(404)
 @app.errorhandler(405)
+@app.errorhandler(500)
 def handle_error(err: HTTPException):
     return {"message": str(err), "code": err.code}, err.code
 

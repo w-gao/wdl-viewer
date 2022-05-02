@@ -10,6 +10,14 @@ from wdl_viewer.wdl.utils import get_graph
 from wdl_viewer.wdl.wdl_graph import AbstractWdlGraph
 
 
+"""
+WebSocket backend. Use this if we can't load everything via a single request,
+and that it would make more sense to lazy load parts of WDL workflow only if
+requested. Also necessary if we have editor support, so we can have
+bi-direction communication.
+"""
+
+
 class Session:
     def __init__(self, ws):
         self.ws = ws
