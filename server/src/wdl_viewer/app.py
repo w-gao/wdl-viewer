@@ -20,10 +20,11 @@ def workflow_graph():
     Get the workflow graph.
     """
     # PARAMS -> request.args
-    # BODY -> request.form
+    # FORM BODY -> request.form
+    # JSON BODY -> request.json
     # BODY FILES -> requests.files
 
-    workflow_url = request.form.get("workflow_url", None)
+    workflow_url = request.form.get("workflow_url", request.json.get("workflow_url", None))
     if not workflow_url:
         raise ValueError("You must set a workflow_url in the request body.")
 
@@ -36,16 +37,20 @@ def workflow_graph():
         return
 
     return {
-        "message": request.form,
+        "message": "success",
         "version": graph.version,
         "wf_dependencies_graph": graph.serialize_wdl_dependencies(),
-        "files": [
-            f.filename for f in request.files.getlist("workflow_attachments")
-        ]
+        # "files": [
+        #     f.filename for f in request.files.getlist("workflow_attachments")
+        # ]
     }
 
 
 app = Flask(__name__)
+
+from flask_cors import CORS
+CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
+
 app.register_blueprint(bp, url_prefix="/api/v1")
 
 
@@ -56,9 +61,20 @@ def index():
 
 @app.errorhandler(404)
 @app.errorhandler(405)
-@app.errorhandler(500)
 def handle_error(err: HTTPException):
     return {"message": str(err), "code": err.code}, err.code
+
+
+@app.errorhandler(Exception)
+def all_exception_handler(err: Exception):
+    """
+    Catch all deliberate or unwanted exceptions and turn them into an
+    interpretable error message.
+    """
+    code = 500
+    if isinstance(err, ValueError):
+        code = 400
+    return {"message": str(err), "code": code}, code
 
 
 def main():
