@@ -1,5 +1,10 @@
 from setuptools import setup, find_packages
 
+
+with open("README.md", encoding="utf-8") as f:
+    long_description = f.read()
+
+
 install_requires = [
     "Flask==2.0.2",
     # "websockets==10.3",
@@ -7,9 +12,12 @@ install_requires = [
     "wdl_parsers==0.2.0",
 ]
 
+
 setup(name="wdl-viewer",
       version="0.0.1",
       description="The REST API for WDL viewer.",
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       url="https://github.com/w-gao/wdl-viewer",
       author="William Gao",
       author_email="me@wlgao.com",
@@ -30,3 +38,4 @@ setup(name="wdl-viewer",
       ],
       keywords="WDL"
       )
+
