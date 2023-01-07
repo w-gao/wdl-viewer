@@ -11,7 +11,7 @@ import ReactFlow, {
   Connection,
 } from 'reactflow';
 
-import { nodes as initialNodes, edges as initialEdges } from '../../data/elements';
+import { nodes as initialNodes, edges as initialEdges } from '../../data/overview_elements';
 import CustomNode from './CustomNode';
 
 import 'reactflow/dist/style.css';
