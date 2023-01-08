@@ -11,7 +11,7 @@ import ReactFlow, {
   Position
 } from 'reactflow';
 
-import { initialNodes, initialEdges } from '../../data/dagre_tree.elements.js';
+import { initialNodes, initialEdges } from '../../data/example_wdl_elements.js';
 import 'reactflow/dist/style.css';
 import './DagreTreeFlow.css';
 
@@ -19,7 +19,7 @@ import './DagreTreeFlow.css';
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidth = 180;
+const nodeWidth = 250;
 const nodeHeight = 50;
 
 const getLayoutedElements = (nodes: ReactFlowNode[], edges: Edge[], direction = 'TB') => {
@@ -29,7 +29,10 @@ const getLayoutedElements = (nodes: ReactFlowNode[], edges: Edge[], direction = 
     rankdir: direction,
     // acyclicer: "greedy",
     // ranker: "tight-tree",
+    // nodesep: 100,
+    // edgesep: 20,
     ranksep: 100,
+    align: "UL"
  });
 
   nodes.forEach((node: ReactFlowNode) => {
@@ -37,7 +40,7 @@ const getLayoutedElements = (nodes: ReactFlowNode[], edges: Edge[], direction = 
   });
 
   edges.forEach((edge: Edge & {weight?: number }) => {
-    dagreGraph.setEdge(edge.source, edge.target);
+    dagreGraph.setEdge(edge.source, edge.target, { /* weight: edge.weight ?? 1 */});
   });
 
   dagre.layout(dagreGraph);
@@ -91,6 +94,11 @@ const DagreTreeFlow = () => {
     [nodes, edges]
   );
 
+  const onNodeClick = (ev: MouseEvent, node: ReactFlowNode) => {
+    setNodes(nds => nds.filter(n => n.id != node.id))
+    console.log(node)
+  }
+
   return (
     <div className="layoutflow">
       <ReactFlow
@@ -99,6 +107,8 @@ const DagreTreeFlow = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        // @ts-ignore
+        onNodeClick={onNodeClick}
         connectionLineType={ConnectionLineType.SimpleBezier}
         fitView
       />
